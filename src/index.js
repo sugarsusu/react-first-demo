@@ -5,19 +5,20 @@ import './index.css'
 // 渲染单独的button
 class Square extends React.Component {
   // 在所有含有构造函数的react组件中，构造函数必须以super（props）开头
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null,
-    };
-  }
+  // 删除构造函数，该组件不需要保存游戏的state
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //     value: null,
+  //   };
+  // }
   render() {
     return (
       <button 
         className="square" 
-        onClick={()=> this.setState({value:'X'})}
+        onClick={()=> this.props.onClick()}
       >
-        {this.state.value}
+        {this.props.value}
       </button>
     );
   }
@@ -39,8 +40,25 @@ class ShoppingList extends React.Component {
 
 // 渲染九个方格
 class Board extends React.Component {
+  // 添加构造函数
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+    };
+  }
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = 'X';
+    this.setState({squares: squares});
+  }
   renderSquare(i) {
-    return <Square value={i} />;
+    return (
+      <Square 
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)} 
+      />
+    );
   }
 
   render() {
@@ -83,7 +101,7 @@ class Game extends React.Component {
           <ol>{/* TODO */}</ol>
         </div>
         <div>
-          <ShoppingList />
+          <ShoppingList name="game"/>
         </div>
       </div>
     );
